@@ -81,3 +81,18 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
   createAndSendToken(user, 200, res);
 });
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+  if (req.body.password || req.body.passwordConfirm)
+    return next(new AppError('無法以此連結更改密碼。', 400));
+  const user = await User.findByIdAndUpdate(req.user._id, req.body, {
+    runValidators: true,
+    new: true,
+  });
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user,
+    },
+  });
+});

@@ -21,7 +21,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 });
 
 exports.createPost = catchAsync(async (req, res, next) => {
-  const newPost = await Post.create(req.body);
+  const newPost = await Post.create({ ...req.body, creator: req.user._id });
   res.status(201).json({
     status: 'success',
     data: {
@@ -30,20 +30,31 @@ exports.createPost = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getPost = (req, res, next) => {
+exports.getPost = catchAsync(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  if (!post) return next(new AppError('刊登不存在。', 404));
   res.status(200).json({
     status: 'success',
+    data: {
+      post,
+    },
   });
-};
+});
 
-exports.updatePost = (req, res, next) => {
+exports.updatePost = catchAsync(async (req, res, next) => {
+  const post = await Post.findOneAndUpdate(
+    { creator: req.user._id },
+    req.body,
+    {
+      runValidators: true,
+      new: true,
+    }
+  );
+  if (!post) return next(new AppError('刊登不存在。', 404));
   res.status(200).json({
     status: 'success',
+    data: {
+      post,
+    },
   });
-};
-
-exports.deletePost = (req, res, next) => {
-  res.status(204).json({
-    status: 'success',
-  });
-};
+});

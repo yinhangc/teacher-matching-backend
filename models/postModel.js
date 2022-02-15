@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema({
+  creator: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: [true, '刊登必須含有作者'],
+  },
   title: {
     type: String,
     required: [true, '刊登必須含有標題'],
@@ -26,10 +31,22 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, '刊登必須含有描述'],
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
   showPost: {
     type: Boolean,
     default: true,
   },
+});
+
+postSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'creator',
+    select: 'name',
+  });
+  next();
 });
 
 const Post = mongoose.model('Post', postSchema);

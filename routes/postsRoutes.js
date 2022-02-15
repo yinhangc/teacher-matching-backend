@@ -3,11 +3,14 @@ const postController = require('../controllers/postController');
 const authController = require('../controllers/authController');
 const router = express.Router();
 
-const { getAllPosts, createPost, getPost, updatePost, deletePost } =
-  postController;
+const { getAllPosts, createPost, getPost, updatePost } = postController;
 const { protect } = authController;
 
-router.route('/').get(protect, getAllPosts).post(createPost);
-router.route('/:id').get(getPost).patch(updatePost).delete(deletePost);
+router
+  .route('/')
+  .get(getAllPosts)
+  .post(protect, createPost)
+  .patch(protect, updatePost);
+router.get('/:id', getPost);
 
 module.exports = router;
