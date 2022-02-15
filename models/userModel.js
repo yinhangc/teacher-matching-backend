@@ -3,6 +3,10 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
+  icon: {
+    type: String,
+    default: 'default-icon.jpg',
+  },
   name: {
     type: String,
     required: [true, '用戶必須含有姓名'],

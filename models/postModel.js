@@ -6,6 +6,13 @@ const postSchema = new mongoose.Schema({
     ref: 'User',
     required: [true, '刊登必須含有作者'],
   },
+  imageCover: {
+    type: String,
+    required: [true, '刊登必須含有封面相片'],
+  },
+  images: {
+    type: [String],
+  },
   title: {
     type: String,
     required: [true, '刊登必須含有標題'],

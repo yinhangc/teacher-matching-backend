@@ -1,13 +1,14 @@
 const express = require('express');
-const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const userController = require('../controllers/userController');
 const router = express.Router();
 
-const { signup, login, updatePassword, protect, updateMe } = authController;
+const { signup, login, updatePassword, protect } = authController;
+const { updateMe, uploadUserPhoto, resizeUserPhoto } = userController;
 
-router.route('/signup').post(signup);
-router.route('/login').post(login);
-router.route('/updatePassword').patch(protect, updatePassword);
-router.route('/updateMe').patch(protect, updateMe);
+router.post('/signup', signup);
+router.post('/login', login);
+router.patch('/updatePassword', protect, updatePassword);
+router.patch('/updateMe', protect, uploadUserPhoto, resizeUserPhoto, updateMe);
 
 module.exports = router;

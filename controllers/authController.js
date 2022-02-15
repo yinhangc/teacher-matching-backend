@@ -18,7 +18,7 @@ const signToken = (userId) => {
 };
 
 const createAndSendToken = (user, statusCode, res) => {
-  const token = signToken(user._id);
+  const token = signToken(user.id);
   res.cookie('jwt', token, cookieOptions);
   user.password = undefined;
   res.status(statusCode).json({
@@ -70,7 +70,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.user._id).select('+password');
+  const user = await User.findById(req.user.id).select('+password');
   if (
     !user ||
     !(await user.correctPassword(req.body.passwordCurrent, user.password))
@@ -80,19 +80,4 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
   createAndSendToken(user, 200, res);
-});
-
-exports.updateMe = catchAsync(async (req, res, next) => {
-  if (req.body.password || req.body.passwordConfirm)
-    return next(new AppError('無法以此連結更改密碼。', 400));
-  const user = await User.findByIdAndUpdate(req.user._id, req.body, {
-    runValidators: true,
-    new: true,
-  });
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user,
-    },
-  });
 });
