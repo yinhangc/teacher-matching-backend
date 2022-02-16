@@ -7,6 +7,7 @@ mongoose.connect(process.env.DATABASE).then((con) => {
 
 const path = require('path');
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 
 const AppError = require('./utils/appError');
@@ -14,6 +15,9 @@ const globalErrorHandler = require('./controllers/errorController');
 const postsRouter = require('./routes/postsRoutes');
 const usersRouter = require('./routes/usersRoutes');
 
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 app.use(express.json());
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,7 +29,7 @@ app.use((req, res, next) => {
   );
   next();
 });
-app.use('/public/img', express.static(path.join('public', 'img')));
+app.use('/image', express.static(path.join('public', 'img')));
 app.use('/api/posts', postsRouter);
 app.use('/api/users', usersRouter);
 app.all('*', (req, res, next) => {

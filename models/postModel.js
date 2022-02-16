@@ -5,10 +5,10 @@ const postSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: [true, '刊登必須含有作者'],
+    unique: true,
   },
   imageCover: {
     type: String,
-    required: [true, '刊登必須含有封面相片'],
   },
   images: {
     type: [String],

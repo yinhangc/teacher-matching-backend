@@ -3,13 +3,14 @@ const catchAsync = require('../utils/catchAsync.js');
 const jwt = require('jsonwebtoken');
 const AppError = require('../utils/appError');
 
-const cookieOptions = {
-  expires: new Date(
-    Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000 // d -> ms
-  ),
-  secure: true,
-  httpOnly: true,
-};
+// const cookieOptions = {
+//   expires: new Date(
+//     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000 // d -> ms
+//   ),
+//   secure: true,
+//   httpOnly: true,
+// };
+// if (process.env.NODE_ENV === 'development') cookieOptions.secure = false;
 
 const signToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -19,8 +20,9 @@ const signToken = (userId) => {
 
 const createAndSendToken = (user, statusCode, res) => {
   const token = signToken(user.id);
-  res.cookie('jwt', token, cookieOptions);
+  // res.cookie('jwt', token, cookieOptions);
   user.password = undefined;
+  user.passwordChangedAt = undefined;
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -51,9 +53,9 @@ exports.protect = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) return next(new AppError('請提供電郵地址和密碼。'));
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email }).select('+password -__v');
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError('Incorrect email or password', 401));
+    return next(new AppError('電郵地址或密碼錯誤。', 401));
   }
   createAndSendToken(user, 200, res);
 });

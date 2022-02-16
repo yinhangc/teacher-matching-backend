@@ -23,6 +23,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 });
 
 exports.createPost = catchAsync(async (req, res, next) => {
+  console.log(req.body);
   const newPost = await Post.create({ ...req.body, creator: req.user.id });
   res.status(201).json({
     status: 'success',
