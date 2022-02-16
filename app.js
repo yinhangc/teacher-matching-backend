@@ -5,6 +5,7 @@ mongoose.connect(process.env.DATABASE).then((con) => {
   console.log('Successfully connected to mongoDB!');
 });
 
+const path = require('path');
 const express = require('express');
 const app = express();
 
@@ -14,6 +15,17 @@ const postsRouter = require('./routes/postsRoutes');
 const usersRouter = require('./routes/usersRoutes');
 
 app.use(express.json());
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    'Access-Control-Allow-Methods',
+    'GET, POST, PATCH'
+  );
+  next();
+});
+app.use('/public/img', express.static(path.join('public', 'img')));
 app.use('/api/posts', postsRouter);
 app.use('/api/users', usersRouter);
 app.all('*', (req, res, next) => {
