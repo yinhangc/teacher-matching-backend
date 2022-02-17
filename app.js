@@ -5,6 +5,7 @@ mongoose.connect(process.env.DATABASE).then((con) => {
   console.log('Successfully connected to mongoDB!');
 });
 
+const cors = require('cors');
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
@@ -18,6 +19,7 @@ const usersRouter = require('./routes/usersRoutes');
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+app.use(cors());
 app.use(express.json());
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

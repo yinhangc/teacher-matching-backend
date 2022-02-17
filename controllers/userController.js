@@ -41,10 +41,22 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     return next(new AppError('無法以此連結更改密碼。', 400));
   const reqBody = { ...req.body };
   if (req.file) reqBody['icon'] = req.file.filename;
-  const user = await User.findByIdAndUpdate(req.user._id, reqBody, {
+  const user = await User.findByIdAndUpdate(req.user.id, reqBody, {
     runValidators: true,
     new: true,
   });
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user,
+    },
+  });
+});
+
+exports.getMe = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id)
+    .populate('post')
+    .select('-passwordChangedAt -__v');
   res.status(200).json({
     status: 'success',
     data: {

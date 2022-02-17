@@ -9,6 +9,7 @@ const postSchema = new mongoose.Schema({
   },
   imageCover: {
     type: String,
+    default: 'default-cover.jpeg',
   },
   images: {
     type: [String],

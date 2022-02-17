@@ -16,7 +16,7 @@ const { protect } = authController;
 router
   .route('/')
   .get(getAllPosts)
-  .post(protect, uploadPostImages, resizePostImages, createPost)
+  .post(protect, createPost)
   .patch(protect, uploadPostImages, resizePostImages, updatePost);
 router.get('/:id', getPost);
 

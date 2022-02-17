@@ -3,6 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const multer = require('multer');
 const sharp = require('sharp');
+const fs = require('fs');
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
   let queryObj = { showPost: true };
@@ -23,7 +24,6 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 });
 
 exports.createPost = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   const newPost = await Post.create({ ...req.body, creator: req.user.id });
   res.status(201).json({
     status: 'success',
@@ -71,7 +71,7 @@ exports.uploadPostImages = upload.fields([
 ]);
 
 exports.resizePostImages = catchAsync(async (req, _, next) => {
-  if (!req.files.imageCover || !req.files.images) return next();
+  if (!req.files.imageCover[0] && !req.files.images) return next();
   const post = await Post.findOne({ creator: req.user.id }, 'id');
   if (req.files.imageCover) {
     req.body.imageCover = `post-${post.id}-cover.jpeg`;
