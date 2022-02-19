@@ -45,7 +45,10 @@ exports.getPost = catchAsync(async (req, res, next) => {
 });
 
 exports.updatePost = catchAsync(async (req, res, next) => {
-  const post = await Post.findOneAndUpdate({ creator: req.user.id }, req.body, {
+  const body = { ...req.body };
+  if (body.imageCover === 'null') body.imageCover = 'default-cover.jpeg';
+  if (body.images === 'null') body.images = [];
+  const post = await Post.findOneAndUpdate({ creator: req.user.id }, body, {
     runValidators: true,
     new: true,
   });
@@ -71,7 +74,7 @@ exports.uploadPostImages = upload.fields([
 ]);
 
 exports.resizePostImages = catchAsync(async (req, _, next) => {
-  if (!req.files.imageCover[0] && !req.files.images) return next();
+  if (!req.files.imageCover && !req.files.images) return next();
   const post = await Post.findOne({ creator: req.user.id }, 'id');
   if (req.files.imageCover) {
     req.body.imageCover = `post-${post.id}-cover.jpeg`;
