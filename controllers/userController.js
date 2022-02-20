@@ -40,7 +40,11 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm)
     return next(new AppError('無法以此連結更改密碼。', 400));
   const reqBody = { ...req.body };
-  if (req.file) reqBody['icon'] = req.file.filename;
+  if (req.file) reqBody.icon = req.file.filename;
+  console.log(reqBody);
+  if (reqBody.photo === null) {
+    reqBody.icon = 'default-icon.jpeg';
+  }
   const user = await User.findByIdAndUpdate(req.user.id, reqBody, {
     runValidators: true,
     new: true,

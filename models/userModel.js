@@ -34,10 +34,7 @@ const userSchema = new mongoose.Schema(
         '輸入的確認密碼與密碼不符',
       ],
     },
-    passwordChangedAt: {
-      default: false,
-      select: false,
-    },
+    passwordChangedAt: Date,
     // passwordResetToken: String,
     // passwordResetExpires: Date,
   },
