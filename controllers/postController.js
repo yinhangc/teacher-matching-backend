@@ -35,7 +35,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
 
 exports.getPost = catchAsync(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
-  if (!post) return next(new AppError('刊登不存在。', 404));
+  if (!post) return next(new AppError('刊登不存在', 404));
   res.status(200).json({
     status: 'success',
     data: {
@@ -52,7 +52,7 @@ exports.updatePost = catchAsync(async (req, res, next) => {
     runValidators: true,
     new: true,
   });
-  if (!post) return next(new AppError('刊登不存在。', 404));
+  if (!post) return next(new AppError('刊登不存在', 404));
   res.status(200).json({
     status: 'success',
     data: {

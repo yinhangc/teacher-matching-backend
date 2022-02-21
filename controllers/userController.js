@@ -38,7 +38,7 @@ exports.resizeUserPhoto = catchAsync(async (req, _, next) => {
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm)
-    return next(new AppError('無法以此連結更改密碼。', 400));
+    return next(new AppError('無法以此連結更改密碼', 400));
   const reqBody = { ...req.body };
   if (req.file) reqBody.icon = req.file.filename;
   console.log(reqBody);

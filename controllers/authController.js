@@ -38,13 +38,13 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.headers.authorization.replace('Bearer ', '');
   }
   if (!token) {
-    return next(new AppError('請登入以探訪頁面。', 401));
+    return next(new AppError('請登入以探訪頁面', 401));
   }
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   const freshUser = await User.findById(decoded.id);
-  if (!freshUser) return next(new AppError('用戶不存在。'));
+  if (!freshUser) return next(new AppError('用戶不存在'));
   if (freshUser.changedPasswordAfter(decoded.iat)) {
-    return next(new AppError('密碼已更改，請再次登入。', 401));
+    return next(new AppError('密碼已更改，請再次登入', 401));
   }
   req.user = freshUser;
   next();
@@ -52,10 +52,10 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  if (!email || !password) return next(new AppError('請提供電郵地址和密碼。'));
+  if (!email || !password) return next(new AppError('請提供電郵地址和密碼'));
   const user = await User.findOne({ email }).select('+password -__v');
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError('電郵地址或密碼錯誤。', 401));
+    return next(new AppError('電郵地址或密碼錯誤', 401));
   }
   createAndSendToken(user, 200, res);
 });
@@ -77,7 +77,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     !user ||
     !(await user.correctPassword(req.body.passwordCurrent, user.password))
   )
-    return next(new AppError('密碼錯誤。', 401));
+    return next(new AppError('密碼錯誤', 401));
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();

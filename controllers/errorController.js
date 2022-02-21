@@ -28,27 +28,26 @@ const sendErrorProd = (err, res) => {
 
 // Handling different kinds of error
 const handleCastErrorDB = (err) => {
-  const message = `Invalid ${err.path}: ${err.value}`;
+  const message = `無效的${err.path}: ${err.value}`;
   return new AppError(message, 400);
 };
 
 const handleDuplicateFieldsDB = (err) => {
   const value = err.message.match(/(["'])(?:\\.|[^\\])*?\1/);
-  const message = `Duplicate field value: ${value[0]}. Please use another value.`;
+  const message = `此用戶資料已存在: ${value[0]}`;
   return new AppError(message, 400);
 };
 
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
-  const message = `Invalid input data: ${errors.join('. ')}`;
+  const message = `輸入無效: ${errors.join('. ')}`;
   return new AppError(message, 400);
 };
 
-const handleJWTError = () =>
-  new AppError('Invalid token. Please log in again', 401);
+const handleJWTError = () => new AppError('Token無效，請重新登入', 401);
 
 const handleJWTExpiredError = () =>
-  new AppError('Your token has expired! Please log in again.', 401);
+  new AppError('Token已過期，請重新登入', 401);
 
 // Error handling middleware
 module.exports = (err, req, res, next) => {
