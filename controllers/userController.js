@@ -41,7 +41,6 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     return next(new AppError('無法以此連結更改密碼', 400));
   const reqBody = { ...req.body };
   if (req.file) reqBody.icon = req.file.filename;
-  console.log(reqBody);
   if (reqBody.photo === null) {
     reqBody.icon = 'default-icon.jpeg';
   }

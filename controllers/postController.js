@@ -3,20 +3,20 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const multer = require('multer');
 const sharp = require('sharp');
-const fs = require('fs');
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
   let queryObj = { showPost: true };
-  if (req.query.region) {
+  if (req.query.region)
     queryObj['region'] = { $in: req.query.region.split(',') };
-  }
-  if (req.query.time) {
-    queryObj['time'] = { $in: req.query.time.split(',') };
-  }
-  const posts = await Post.find(queryObj);
+  if (req.query.time) queryObj['time'] = { $in: req.query.time.split(',') };
+  let limit = parseInt(req.query.limit) || 6;
+  let page = parseInt(req.query.page) || 1;
+  const skip = (page - 1) * limit;
+  const posts = await Post.find(queryObj).skip(skip).limit(limit);
+  const postsTotal = await Post.count(queryObj);
   res.status(200).json({
     status: 'success',
-    results: posts.length,
+    total: postsTotal,
     data: {
       posts,
     },

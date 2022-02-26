@@ -2,7 +2,8 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DATABASE).then((con) => {
-  console.log('Successfully connected to mongoDB!');
+  if (process.env.NODE_ENV === 'development')
+    console.log('Successfully connected to mongoDB!');
 });
 
 const cors = require('cors');
@@ -41,5 +42,6 @@ app.use(globalErrorHandler);
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
+  if (process.env.NODE_ENV === 'development')
+    console.log(`App running on port ${port}...`);
 });
