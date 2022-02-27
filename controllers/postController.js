@@ -1,8 +1,18 @@
 const Post = require('../models/postModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-const multer = require('multer');
 const sharp = require('sharp');
+const multer = require('multer');
+// const multerS3 = require('multer-s3');
+// const aws = require('aws-sdk');
+
+// aws.config.update({
+//   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//   secretKeyId: process.env.AWS_ACCESS_KEY_ID,
+//   region: process.env.AWS_REGION,
+// });
+
+// const s3 = new aws.S3();
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
   let queryObj = { showPost: true };
